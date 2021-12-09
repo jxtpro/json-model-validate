@@ -1,0 +1,27 @@
+# Created by .ignore support plugin (hsz.mobi)
+.idea
+src/test
+opt/
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+/build/
+
+### defined by developer ###
+**/target/
+*.log
+/configurations
+
+### **/.gitignore
+**/.mvn/**
+**.cmd
+**/mvnw
+.flattened-pom.xml
+.idea

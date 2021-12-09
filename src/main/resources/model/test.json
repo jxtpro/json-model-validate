@@ -1,0 +1,11 @@
+{
+  "name": {
+    "x-verification": {
+      "type": "String",
+      "length": "",
+      "isEmpty": false,
+      "regex": "[a-z][a-z]a",
+      "range": ""
+    }
+  }
+}
