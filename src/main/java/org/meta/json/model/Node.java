@@ -18,17 +18,19 @@ public class Node {
 
     private       Map<String, Object>                  model            = new HashMap<>();
     private       Map<String, Object>                  data             = new HashMap<>();
-    private       Path                                 baseModelPath    = Paths.get(new File("").getAbsolutePath()).resolve("src\\main\\resources").resolve("model");
-    private       Path                                 baseDataPath     = Paths.get(new File("").getAbsolutePath()).resolve("src\\main\\resources").resolve("data");
+    private       Path                                 baseModelPath    = Paths.get(new File("").getAbsolutePath()).resolve("src" + System.getProperty("file.separator") + "main" + System.getProperty("file.separator") + "resources").resolve("model");
+    private       Path                                 baseDataPath     = Paths.get(new File("").getAbsolutePath()).resolve("src" + System.getProperty("file.separator") + "main" + System.getProperty("file.separator") + "resources").resolve("data");
     private       String                               defaultModelFile = "default.json";
     private       String                               defaultDataFile  = "default.json";
     private       String                               jsonModel;
     public static Map<String, JSONNodeValidateHandler> handlerMap       = new HashMap<>(8);
     private       TraceContainer                       traceContainer   = new TraceContainer();
+    private       Object                               lock             = new Object();
 
     public void init() {
         jsonModel = JSON.toJSONString(model);
     }
+
     static {
         handlerMap.put(NodeConstant.X_VERIFICATION_TYPE_BOOLEAN, new BooleanJSONNodeValidateHandler());
         handlerMap.put(NodeConstant.X_VERIFICATION_TYPE_STRING, new StringJSONNodeValidateHandler());
@@ -39,17 +41,21 @@ public class Node {
         handlerMap.put(NodeConstant.X_VERIFICATION_TYPE_JSONOBJECT, new JSONObjectJSONNodeValidateHandler());
         handlerMap.put(NodeConstant.X_VERIFICATION_TYPE_JSONARRAY, new JSONArrayJSONNodeValidateHandler());
     }
+
     public Node() {
     }
+
     public Node(Map<String, Object> model) {
         this.model = model;
         init();
     }
+
     public Node(Map<String, Object> model, Map<String, Object> data) {
         this.model = model;
         this.data = data;
         init();
     }
+
     public Node(Path modelFile) {
         load(modelFile, null);
         init();
@@ -77,12 +83,16 @@ public class Node {
 
     public boolean validate() {
         NodeVerificationHandler handlerVerification = new NodeVerificationHandler(jsonModel, traceContainer);
-        return handlerVerification.checkValue(data);
+        synchronized (lock) {
+            return handlerVerification.checkValue(data);
+        }
     }
 
     public boolean validate(Map<String, Object> data) {
         NodeVerificationHandler handlerVerification = new NodeVerificationHandler(jsonModel, traceContainer);
-        return handlerVerification.checkValue(data);
+        synchronized (lock) {
+            return handlerVerification.checkValue(data);
+        }
     }
 
     public TraceContainer getTraceContainer() {
